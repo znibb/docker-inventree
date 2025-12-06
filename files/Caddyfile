@@ -7,6 +7,10 @@
 #
 # Ref to the Caddyfile documentation: https://caddyserver.com/docs/caddyfile
 
+# Disable automatic HTTPS globally
+{
+    auto_https off
+}
 
 # Logging configuration for Caddy
 (log_common) {
@@ -32,7 +36,7 @@
 # The default server address is configured in the .env file
 # If not specified, the proxy listens for all http/https traffic
 # If you need to listen on multiple addresses, or use a different port, you can modify this section directly
-{$INVENTREE_SITE_URL:"http://, https://"} {
+{$INVENTREE_SITE_URL:"http://"} {
 	import log_common inventree
 
 	encode gzip
