@@ -13,13 +13,25 @@ Docker setup for running Inventree behind a Traefik reverse-proxy with Authentik
 See relevant [Authentik](https://github.com/znibb/docker-authentik#46-inventree) repo
 
 ## Updates
-Run:
+Whenever you update what image tag you're using you also need to run:
 1. `docker compose down`
 1. `docker compose run --rm server invoke update`
 1. `docker compose up -d`
 
 ## Admin interface
 To access the admin interface simply add `/admin/` to the URL (NOTE the trailing `/`)
+
+## Recommended default settings
+1. Under `System Settings`:
+    1. Under `Server`:
+        - Company name: Set a suitable "Company" name
+    1. Under `Authentication`:
+        - Enable SSO: True
+        - Enable SSO registration: True
+        - Auto-fill SSO users: True
+        - Enable SSO group sync: False
+    1. Under `Parts`:
+        - Allow Duplicate IPN: False
 
 ## Plugins
 1. Go to `Admin Center`
@@ -41,3 +53,5 @@ Source: https://github.com/afkiwers/inventree_kicad
 ### Finish
 1. Restart services and run `docker compose run server invoke plugins`
 
+## Currency
+To modify the list of available currencies go to `System Settings->Pricing`, click `Supported Currencies` and add/remove/modify the comma-separated list of currencies (use 3-letter country codes according to [ISO 3166](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes))
