@@ -24,7 +24,12 @@ To access the admin interface simply add `/admin/` to the URL (NOTE the trailing
 ## Plugins
 1. Go to `Admin Center`
 1. Click `Plugins` under `Extend / Integrate` in the left side panel
-1. Click `Install Plugin` at the top of the plugin list
+1. Expand the `Plugin Settings` section and enable:
+    - `Enable URL integration`
+    - `Enable app integration`
+    - `Check plugins on startup`
+1. Expand the `Plugins` section and click `Install Plugin` above the plugin list
+1. Check out available plugin settings by left-clicking on the installed plugin in the list
 
 ### KiCadLibraryPlugin
 Source: https://github.com/afkiwers/inventree_kicad
