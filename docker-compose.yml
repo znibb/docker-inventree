@@ -38,11 +38,21 @@ services:
         labels:
             - traefik.enable=true
             - traefik.http.services.inventree.loadbalancer.server.port=8000
+
+            # Router for KiCad plugin
+            - traefik.http.routers.inventree-kicad.rule=Host(`parts.${TRAEFIK_DOMAIN:?}`) && PathPrefix(`/plugin/kicad-library-plugin`)
+            - traefik.http.routers.inventree-kicad.entrypoints=https
+            - traefik.http.routers.inventree-kicad.tls=true
+            - traefik.http.routers.inventree-kicad.tls.certresolver=cloudflare
+            - traefik.http.routers.inventree-kicad.service=inventree
+
+            # Default router
             - traefik.http.routers.inventree.rule=Host(`inventree.${TRAEFIK_DOMAIN:?}`) || Host(`parts.${TRAEFIK_DOMAIN:?}`)
             - traefik.http.routers.inventree.entrypoints=https
             - traefik.http.routers.inventree.tls=true
             - traefik.http.routers.inventree.tls.certresolver=cloudflare
             - traefik.http.routers.inventree.middlewares=authentik@file
+            - traefik.http.routers.inventree.service=inventree
         networks:
             - inventree
             - traefik
