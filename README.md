@@ -1,5 +1,5 @@
 # docker-inventree
-Docker setup for running Inventree begind a Traefik reverse-proxy with Authentik Identity Provider
+Docker setup for running Inventree behind a Traefik reverse-proxy with Authentik Identity Provider
 
 ## Docker setup
 1. Initialize config by running init.sh: `./init.sh`
