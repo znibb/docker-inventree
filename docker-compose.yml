@@ -41,6 +41,7 @@ services:
 
             # Router for KiCad plugin
             - traefik.http.routers.inventree-kicad.rule=Host(`parts.${TRAEFIK_DOMAIN:?}`) && PathPrefix(`/plugin/kicad-library-plugin`)
+            - traefik.http.routers.inventree-kicad.priority=200
             - traefik.http.routers.inventree-kicad.entrypoints=https
             - traefik.http.routers.inventree-kicad.tls=true
             - traefik.http.routers.inventree-kicad.tls.certresolver=cloudflare
@@ -48,6 +49,7 @@ services:
 
             # Default router
             - traefik.http.routers.inventree.rule=Host(`inventree.${TRAEFIK_DOMAIN:?}`) || Host(`parts.${TRAEFIK_DOMAIN:?}`)
+            - traefik.http.routers.inventree.priority=100
             - traefik.http.routers.inventree.entrypoints=https
             - traefik.http.routers.inventree.tls=true
             - traefik.http.routers.inventree.tls.certresolver=cloudflare
