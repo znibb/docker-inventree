@@ -29,7 +29,7 @@ To access the admin interface simply add `/admin/` to the URL (NOTE the trailing
         - Enable SSO: True
         - Enable SSO registration: True
         - Auto-fill SSO users: True
-        - Enable SSO group sync: False
+        - Enable SSO group sync: True
     1. Under `Parts`:
         - Allow Duplicate IPN: False
 
@@ -48,6 +48,7 @@ Source: https://github.com/afkiwers/inventree_kicad
 1. Enter:
     - Package Name: `inventree-kicad-plugin`
     - Source URL: `git+https://github.com/afkiwers/inventree_kicad`
+1. Enable `Confirm plugin installation` and click `Install`
 1. Activate the plugin by clicking the `...` menu to the far right of `KiCadLibraryPlugin` and select `Activate`
 
 ### Finish
