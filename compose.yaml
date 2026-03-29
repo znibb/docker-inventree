@@ -30,7 +30,12 @@ services:
     # Uses gunicorn as the web server
     server:
         # https://hub.docker.com/r/inventree/inventree
-        image: inventree/inventree:${INVENTREE_TAG:-stable}
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                INVENTREE_TAG: ${INVENTREE_TAG:-stable}
+        image: znibb/inventree:${INVENTREE_TAG:-stable}
         container_name: inventree-server
         restart: unless-stopped
         env_file:
@@ -63,8 +68,12 @@ services:
 
     # Background worker process handles long-running or periodic tasks
     worker:
-        # If you wish to specify a particular InvenTree version, do so here
-        image: inventree/inventree:${INVENTREE_TAG:-stable}
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                INVENTREE_TAG: ${INVENTREE_TAG:-stable}
+        image: znibb/inventree:${INVENTREE_TAG:-stable}
         container_name: inventree-worker
         command: invoke worker
         depends_on:
