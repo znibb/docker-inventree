@@ -1,10 +1,13 @@
 # docker-inventree
-Docker setup for running Inventree behind a Traefik reverse-proxy with Authentik Identity Provider
+Docker setup for running Inventree behind a Traefik reverse-proxy with Authentik Identity Provider.  
+
+When using the Kicad plugin there's an issue with the Description metadata field not being forwarded to Kicad symbols correctly, building a custom image that applies `./files/patch_serializer.py` fixes that issue.
 
 ## Docker setup
 1. Initialize config by running init.sh: `./init.sh`
 1. Input personal information into `.env`
 1. Make sure that Docker network `traefik` exists, `docker network ls`
+1. Build the custom patched version of Inventree: `docker compose build`
 1. Initialize the Inventree server: `docker compose run --rm server invoke update`
 1. Create a superuser/admin account: `docker compose run --rm server invoke superuser`
 1. Run `docker compose up -d` and check logs
