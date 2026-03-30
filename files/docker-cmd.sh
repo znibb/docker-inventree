@@ -2,10 +2,10 @@
 
 set -e
 
-# Run database migrations and static file collection.
+# Run database migrations.
 # This also initialises Django, which activates plugins and registers
 # them in the database — required before apply_plugin_settings.py runs.
-invoke update --skip-backup
+invoke migrate
 
 # Apply KiCad plugin settings.
 python3 /home/inventree/src/backend/InvenTree/manage.py shell \

@@ -18,6 +18,7 @@ See relevant [Authentik](https://github.com/znibb/docker-authentik#46-inventree)
 ## Updates
 Whenever you update what image tag you're using you also need to run:
 1. `docker compose down`
+1. `docker compose build`
 1. `docker compose run --rm server invoke update`
 1. `docker compose up -d`
 
