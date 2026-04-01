@@ -56,12 +56,6 @@ services:
             - traefik.http.routers.inventree-api.entrypoints=websecure
             - traefik.http.routers.inventree-api.service=inventree
 
-            # Router for static media
-            - traefik.http.routers.inventree-media.rule=Host(`parts.${TRAEFIK_DOMAIN:?}`) && PathPrefix(`/media`)
-            - traefik.http.routers.inventree-media.priority=200
-            - traefik.http.routers.inventree-media.entrypoints=websecure
-            - traefik.http.routers.inventree-media.service=inventree
-
             # Default router
             - traefik.http.routers.inventree.rule=Host(`inventree.${TRAEFIK_DOMAIN:?}`) || Host(`parts.${TRAEFIK_DOMAIN:?}`)
             - traefik.http.routers.inventree.priority=100
@@ -109,8 +103,16 @@ services:
             - server
         env_file:
             - .env
+        labels:
+            - traefik.enable=true
+            - traefik.http.services.inventree-caddy.loadbalancer.server.port=80
+            - traefik.http.routers.inventree-media.rule=Host(`parts.${TRAEFIK_DOMAIN:?}`) && PathPrefix(`/media`)
+            - traefik.http.routers.inventree-media.priority=200
+            - traefik.http.routers.inventree-media.entrypoints=websecure
+            - traefik.http.routers.inventree-media.service=inventree-caddy
         networks:
             - inventree
+            - traefik
         volumes:
             - ./files/Caddyfile:/etc/caddy/Caddyfile:ro,z
             - ${INVENTREE_EXT_VOLUME}/static:/var/www/static:z
