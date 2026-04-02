@@ -10,12 +10,15 @@ from django.db import OperationalError, connection
 
 SQL = """
 INSERT INTO plugin_pluginsetting (key, value, plugin_id)
-SELECT
-    'KICAD_FIELD_VISIBILITY_PARAMETER_GLOBAL',
-    'Case',
-    id
+SELECT 'KICAD_FIELD_VISIBILITY_PARAMETER_GLOBAL', 'Case', id
 FROM plugin_pluginconfig
 WHERE key = 'kicad-library-plugin'
+ON CONFLICT (plugin_id, key) DO UPDATE SET value = EXCLUDED.value;
+
+INSERT INTO plugin_pluginsetting (key, value, plugin_id)
+SELECT 'KICAD_SYMBOL_PARAMETER', pt.id::text, pc.id
+FROM plugin_pluginconfig pc, part_partparametertemplate pt
+WHERE pc.key = 'kicad-library-plugin' AND pt.name = 'Symbol'
 ON CONFLICT (plugin_id, key) DO UPDATE SET value = EXCLUDED.value;
 """
 
