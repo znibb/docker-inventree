@@ -105,5 +105,36 @@ elif ref_state_a in content:
 else:
     raise AssertionError("reference visibility patch: unexpected serializer format")
 
+# ── Patch 4: omit footprint field when empty ────────────────────────────────
+#
+# KiCad distinguishes between a footprint field that is absent ("No footprint
+# specified") and one that is present but empty or malformed ("Invalid footprint
+# specified"). The plugin always emits the footprint field even when its value
+# is "". Removing the key when empty lets KiCad handle it correctly.
+
+fp_state_a = (
+    "        if self.get_plugin_setting('KICAD_ENABLE_MANUFACTURER_DATA', False):\n"
+    "            return kicad_default_fields | self.get_supplier_part_fields(part) | self.get_custom_fields(part, list(kicad_default_fields.keys()))\n"
+    "        else:\n"
+    "            return kicad_default_fields | self.get_custom_fields(part, list(kicad_default_fields.keys()))\n"
+)
+fp_target = (
+    "        if not kicad_default_fields['footprint']['value']:\n"
+    "            del kicad_default_fields['footprint']\n"
+    "\n"
+    "        if self.get_plugin_setting('KICAD_ENABLE_MANUFACTURER_DATA', False):\n"
+    "            return kicad_default_fields | self.get_supplier_part_fields(part) | self.get_custom_fields(part, list(kicad_default_fields.keys()))\n"
+    "        else:\n"
+    "            return kicad_default_fields | self.get_custom_fields(part, list(kicad_default_fields.keys()))\n"
+)
+
+if fp_target in content:
+    print("footprint omit-when-empty patch: already applied, skipping")
+elif fp_state_a in content:
+    content = content.replace(fp_state_a, fp_target, 1)
+    print("footprint omit-when-empty patch: applied")
+else:
+    raise AssertionError("footprint omit-when-empty patch: unexpected serializer format")
+
 with open(path, 'w') as f:
     f.write(content)
