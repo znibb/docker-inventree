@@ -136,5 +136,51 @@ elif fp_state_a in content:
 else:
     raise AssertionError("footprint omit-when-empty patch: unexpected serializer format")
 
+# ── Patch 5: apply KicadHideFields parameter to control field visibility ────
+#
+# The KicadHideFields InvenTree parameter holds a comma-separated list of
+# KiCad default field names to hide (e.g. "Value").
+# When absent or empty, no additional fields are hidden.
+# Categories set their own default via 'hide_fields' in inventree_structure.yaml
+# (e.g. FuseHolder sets "Value" to hide the redundant value label).
+
+vis_state_a = (
+    "        if not kicad_default_fields['footprint']['value']:\n"
+    "            del kicad_default_fields['footprint']\n"
+    "\n"
+    "        if self.get_plugin_setting('KICAD_ENABLE_MANUFACTURER_DATA', False):\n"
+    "            return kicad_default_fields | self.get_supplier_part_fields(part) | self.get_custom_fields(part, list(kicad_default_fields.keys()))\n"
+    "        else:\n"
+    "            return kicad_default_fields | self.get_custom_fields(part, list(kicad_default_fields.keys()))\n"
+)
+vis_target = (
+    "        if not kicad_default_fields['footprint']['value']:\n"
+    "            del kicad_default_fields['footprint']\n"
+    "\n"
+    "        try:\n"
+    "            _khf = part.parameters.filter(template__name='KicadHideFields').first()\n"
+    "            _khf_data = _khf.data if _khf else None\n"
+    "        except Exception:\n"
+    "            _khf_data = None\n"
+    "        if _khf_data:\n"
+    "            _hide = {f.strip().lower() for f in _khf_data.split(',')}\n"
+    "            for _f in list(kicad_default_fields.keys()):\n"
+    "                if _f in _hide:\n"
+    "                    kicad_default_fields[_f]['visible'] = 'False'\n"
+    "\n"
+    "        if self.get_plugin_setting('KICAD_ENABLE_MANUFACTURER_DATA', False):\n"
+    "            return kicad_default_fields | self.get_supplier_part_fields(part) | self.get_custom_fields(part, list(kicad_default_fields.keys()))\n"
+    "        else:\n"
+    "            return kicad_default_fields | self.get_custom_fields(part, list(kicad_default_fields.keys()))\n"
+)
+
+if vis_target in content:
+    print("KicadHideFields visibility patch: already applied, skipping")
+elif vis_state_a in content:
+    content = content.replace(vis_state_a, vis_target, 1)
+    print("KicadHideFields visibility patch: applied")
+else:
+    raise AssertionError("KicadHideFields visibility patch: unexpected serializer format")
+
 with open(path, 'w') as f:
     f.write(content)
