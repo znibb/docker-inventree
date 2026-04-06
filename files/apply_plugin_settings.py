@@ -20,7 +20,7 @@ ON CONFLICT (plugin_id, key) DO UPDATE SET value = EXCLUDED.value;
 
 INSERT INTO plugin_pluginsetting (key, value, plugin_id)
 SELECT 'KICAD_FIELD_VISIBILITY_PARAMETER', pt.id::text, pc.id
-FROM plugin_pluginconfig pc, part_partparametertemplate pt
+FROM plugin_pluginconfig pc, common_parametertemplate pt
 WHERE pc.key = 'kicad-library-plugin' AND pt.name = 'KicadExtraFields'
 ON CONFLICT (plugin_id, key) DO UPDATE SET value = EXCLUDED.value;
 
