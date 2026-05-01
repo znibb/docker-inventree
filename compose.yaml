@@ -7,14 +7,15 @@ services:
         restart: unless-stopped
         environment:
             - PGDATA=/var/lib/postgresql/data/pgdb
-            - POSTGRES_USER=${INVENTREE_DB_USER:?You must provide the 'INVENTREE_DB_USER' variable in the .env file}
-            - POSTGRES_PASSWORD=${INVENTREE_DB_PASSWORD:?You must provide the 'INVENTREE_DB_PASSWORD' variable in the .env file}
-            - POSTGRES_DB=${INVENTREE_DB_NAME:?You must provide the 'INVENTREE_DB_NAME' variable in the .env file}
+            - POSTGRES_USER=${INVENTREE_DB_USER:?}
+            - POSTGRES_PASSWORD=${INVENTREE_DB_PASSWORD:?}
+            - POSTGRES_DB=${INVENTREE_DB_NAME:?}
+            - TZ=${INVENTREE_TIMEZONE:-Etc/UTC}
         networks:
             - inventree
         volumes:
             # Map 'data' volume such that postgres database is stored externally
-            - ${INVENTREE_EXT_VOLUME:?You must specify the 'INVENTREE_EXT_VOLUME' variable in the .env file!}:/var/lib/postgresql/data/:z
+            - ${INVENTREE_DB_VOLUME:?}:/var/lib/postgresql/data/:z
 
     # redis acts as database cache manager
     cache:
@@ -57,7 +58,7 @@ services:
             - traefik.http.routers.inventree-api.service=inventree
 
             # Default router
-            - traefik.http.routers.inventree.rule=Host(`inventree.${TRAEFIK_DOMAIN:?}`) || Host(`parts.${TRAEFIK_DOMAIN:?}`)
+            - traefik.http.routers.inventree.rule=Host(`parts.${TRAEFIK_DOMAIN:?}`)
             - traefik.http.routers.inventree.priority=100
             - traefik.http.routers.inventree.entrypoints=websecure
             - traefik.http.routers.inventree.middlewares=authentik@file
@@ -67,7 +68,8 @@ services:
             - traefik
         volumes:
             # Data volume must map to /home/inventree/data
-            - ${INVENTREE_EXT_VOLUME}:/home/inventree/data:z
+            - ${INVENTREE_DATA_VOLUME}:/home/inventree/data:z
+            #- ./inventree-data:/home/inventree/backup-data
         depends_on:
             - db
             - cache
@@ -90,7 +92,7 @@ services:
             - inventree
         volumes:
             # Data volume must map to /home/inventree/data
-            - ${INVENTREE_EXT_VOLUME}:/home/inventree/data:z
+            - ${INVENTREE_DATA_VOLUME}:/home/inventree/data:z
         restart: unless-stopped
 
     # caddy acts as reverse proxy and static file server
@@ -116,11 +118,11 @@ services:
             - traefik
         volumes:
             - ./files/Caddyfile:/etc/caddy/Caddyfile:ro,z
-            - ${INVENTREE_EXT_VOLUME}/static:/var/www/static:z
-            - ${INVENTREE_EXT_VOLUME}/media:/var/www/media:z
-            - ${INVENTREE_EXT_VOLUME}:/var/log:z
-            - ${INVENTREE_EXT_VOLUME}:/data:z
-            - ${INVENTREE_EXT_VOLUME}:/config:z
+            - ${INVENTREE_DATA_VOLUME}/static:/var/www/static:z
+            - ${INVENTREE_DATA_VOLUME}/media:/var/www/media:z
+            - ${INVENTREE_DATA_VOLUME}:/var/log:z
+            - ${INVENTREE_DATA_VOLUME}:/data:z
+            - ${INVENTREE_DATA_VOLUME}:/config:z
 
 networks:
     inventree:
