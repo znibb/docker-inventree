@@ -69,7 +69,6 @@ services:
         volumes:
             # Data volume must map to /home/inventree/data
             - ${INVENTREE_DATA_VOLUME}:/home/inventree/data:z
-            #- ./inventree-data:/home/inventree/backup-data
         depends_on:
             - db
             - cache
