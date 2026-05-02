@@ -13,7 +13,7 @@ When using the Kicad plugin there's an issue with the Description metadata field
 1. Run `docker compose up -d` and check logs
 
 ## Authentik setup
-See relevant [Authentik](https://github.com/znibb/docker-authentik#46-inventree) repo
+See [Authentik](https://github.com/znibb/docker-authentik) repo
 
 ## Updates
 Whenever you update what image tag you're using you also need to run:
